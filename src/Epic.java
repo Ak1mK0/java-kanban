@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    private ArrayList<Subtask> subtasks;
+    private ArrayList<Task> subtasks;
+    private boolean isEpic;
 
-    public Epic(String name, String description, StatusList status, ArrayList<Subtask> subtasks) {
+    public Epic(String name, String description, StatusList status, boolean isEpic) {
         super(name, description, status);
-        this.subtasks = subtasks;
+        this.isEpic = isEpic;
     }
 
     @Override

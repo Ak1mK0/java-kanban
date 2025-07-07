@@ -1,23 +1,42 @@
-import java.util.ArrayList;
-
 public class Main {
 
     public static void main(String[] args) {
+
         System.out.println("Поехали!");
+        TaskManager taskMeneger = new TaskManager();
 
-        Task task = new Task("Перезд", "Машина", StatusList.NEW);
-        System.out.println(task);
+        taskMeneger.addTask("таск1", "1", StatusList.NEW, false, null);
+        taskMeneger.addTask("таск2", "2", StatusList.DONE, false, null);
+        taskMeneger.addTask("таск3", "3", StatusList.IN_PROGRESS, false, null);
 
-        Task sub1 = new Subtask("Перезд 12", "Машина", StatusList.IN_PROGRESS, "123");
-        Task sub2 = new Subtask("Перезд 41", "Машина", StatusList.DONE, "123");
-        System.out.println(sub1);
-        System.out.println(sub2);
+        taskMeneger.addTask("эпик1", "11", StatusList.IN_PROGRESS, true, null);
+        taskMeneger.addTask("эпик2", "22", StatusList.NEW, true, null);
 
-        ArrayList<Task> sub = new ArrayList<>();
-        sub.add(sub1);
-        sub.add(sub2);
-        Epic epic = new Epic("Перезд 455", "Машина", StatusList.IN_PROGRESS, sub);
-        System.out.println(epic);
+        taskMeneger.addTask("эпик1саб1", "11", StatusList.IN_PROGRESS, false, "эпик1");
+        taskMeneger.addTask("эпик1саб2", "12", StatusList.IN_PROGRESS, false, "эпик1");
+
+        taskMeneger.addTask("эпик2саб1", "21", StatusList.NEW, false, "эпик2");
+
+        System.out.println("заполнение болванками");
+        System.out.println(taskMeneger.getTaskStatus());
+        System.out.println(taskMeneger.getTaskList());
+        System.out.println("__________________");
+
+        System.out.println("поиск по id ");
+        System.out.println(taskMeneger.findTaskId(-1608546673));
+        System.out.println(taskMeneger.findTaskId(1608546673));
+        System.out.println("__________________");
+
+        System.out.println("поиск по name ");
+        System.out.println(taskMeneger.findTaskName("таск2"));
+        System.out.println(taskMeneger.findTaskName(""));
+        System.out.println("__________________");
+
+        taskMeneger.removeAllTasks();
+        System.out.println("полная очистка");
+        System.out.println(taskMeneger.getTaskStatus());
+        System.out.println(taskMeneger.getTaskList());
+
 
     }
 }
