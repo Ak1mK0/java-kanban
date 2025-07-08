@@ -3,45 +3,27 @@ import java.util.*;
 
 public class TaskManager {
 
-    private static EnumMap<StatusList, ArrayList<Integer>> taskStatus = new EnumMap<>(StatusList.class);
-    private static HashMap<Integer, Task> taskList = new HashMap<>();
+    private HashMap<Integer, Task> taskList = new HashMap<>();
 
-    static {
-        taskStatusInit();
-    }
+    public void addTask(Task task) {
+        if (task.getClass() != Subtask.class) {
+            taskList.put((task.getId()), task);
+        } else {
+            taskList.put((task.getId()), task);
 
-    public void addTask(String name,
-                        String description,
-                        StatusList status,
-                        boolean isEpic,
-                        String taskFor) {
-        if (!isEpic && (taskFor == null)) {
-            Task task = new Task(name, description, status);
-            if (taskList.putIfAbsent(task.getId(), task) != null) {
-                System.out.println("Такая задача уже есть");
-            }
-            taskStatus.get(status).add(task.getId());
-        } else if (isEpic && (taskFor == null)) {
-            Task epic = new Epic(name, description, status, true);
-            if (taskList.putIfAbsent(epic.getId(), epic) != null) {
-                System.out.println("Такая задача уже есть");
-            }
-            taskStatus.get(status).add(epic.getId());
-        } else if (!isEpic) {
-            Task subTask = new Subtask(name, description, status, taskFor);
-            if (taskList.putIfAbsent(subTask.getId(), subTask) != null) {
-                System.out.println("Такая задача уже есть");
-            }
-            taskStatus.get(status).add(subTask.getId());
+            Subtask tempSubTask = (Subtask) task;
+            String taskFor = tempSubTask.getTaskFor();
 
+            Epic tempEpic = (Epic) findTaskByName(taskFor);
+            tempEpic.addSubtask(task);
         }
     }
 
-    public Task findTaskId(int id) {
-        return taskList.get(id);
+    public void updateTask(int id, Task task) {
+        taskList.get(id).updateTask(task);
     }
 
-    public Task findTaskName(String name) {
+    public Task findTaskByName(String name) {
         for (Task task : taskList.values()) {
             if (name.equals(task.getName())) {
                 return task;
@@ -50,29 +32,38 @@ public class TaskManager {
         return null;
     }
 
-    public void removeAllTasks() {
-        taskStatusInit();
+    public Task findTaskById(int id) {
+        for (Task task : taskList.values()) {
+            if (id == task.getId()) {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public void printAll() {
+        for (Task task : taskList.values()) {
+            System.out.println(task);
+        }
+    }
+
+    public void printById(int id) {
+            System.out.println(findTaskById(id));
+    }
+
+    public void removeAll() {
         taskList = new HashMap<>();
     }
 
-
-
-
-
-
-
-
-    public EnumMap<StatusList, ArrayList<Integer>> getTaskStatus() {
-        return taskStatus;
-    }
-
-    public HashMap<Integer, Task> getTaskList() {
-        return taskList;
-    }
-
-    private static void taskStatusInit() {
-        for (StatusList status : StatusList.values()) {
-            taskStatus.put((StatusList) status, new ArrayList<>());
+    public void removeById(int id) {
+        Task task = findTaskById(id);
+        if (task.getClass() != Epic.class) {
+            taskList.remove(id);
+        } else {
+            for (Task tempTask : ((Epic) task).getSubtasks()) {
+                taskList.remove(tempTask.getId());
+            }
+            taskList.remove(id);
         }
     }
 }

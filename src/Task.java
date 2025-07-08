@@ -1,18 +1,48 @@
 import java.util.Objects;
 
 public class Task {
-    private final String name;
+    private String name;
     private String description;
-    private final int id;
-    private final static int[] primeNum = {11, 17, 23, 31};
     private StatusList status;
+    private int id;
 
 
-    public Task(String name, String description, StatusList status) {
+    public Task(String name, String description, StatusList status, int id) {
         this.name = name;
         this.description = description;
         this.status = status;
-        this.id = hashId(name);
+        this.id = id;
+    }
+
+    public void updateTask(Task task) {
+        setName(task.getName());
+        setDescription(task.getDescription());
+        setStatus(task.getStatus());
+        setId(task.getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, id, status);
+    }
+
+    @Override
+    public String toString() {
+        return  String.format("Задача: %s. " +
+                "Идендификатор задачи: %d. " +
+                "Описание задачи: %s." +
+                " Статус задачи: %s",
+                getName(),
+                getId(),
+                getDescription(),
+                getStatus());
     }
 
     public String getName() {
@@ -31,25 +61,19 @@ public class Task {
         return status;
     }
 
-    private int hashId(String name) {
-        int hashId = 0;
-        int i = 0;
-        String[] words = name.split(" ");
-        for (String word : words) {
-            hashId = hashId + (name.hashCode() * primeNum[i]);
-            i++;
-            if (i == primeNum.length) {
-                i = 0;
-            }
-        }
-        return hashId;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "name='" + name + '\'' +
-                '}';
+    public void setStatus(StatusList status) {
+        this.status = status;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

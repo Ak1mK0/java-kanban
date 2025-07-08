@@ -2,41 +2,75 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("Поехали!");
         TaskManager taskMeneger = new TaskManager();
-
-        taskMeneger.addTask("таск1", "1", StatusList.NEW, false, null);
-        taskMeneger.addTask("таск2", "2", StatusList.DONE, false, null);
-        taskMeneger.addTask("таск3", "3", StatusList.IN_PROGRESS, false, null);
-
-        taskMeneger.addTask("эпик1", "11", StatusList.IN_PROGRESS, true, null);
-        taskMeneger.addTask("эпик2", "22", StatusList.NEW, true, null);
-
-        taskMeneger.addTask("эпик1саб1", "11", StatusList.IN_PROGRESS, false, "эпик1");
-        taskMeneger.addTask("эпик1саб2", "12", StatusList.IN_PROGRESS, false, "эпик1");
-
-        taskMeneger.addTask("эпик2саб1", "21", StatusList.NEW, false, "эпик2");
-
-        System.out.println("заполнение болванками");
-        System.out.println(taskMeneger.getTaskStatus());
-        System.out.println(taskMeneger.getTaskList());
-        System.out.println("__________________");
-
-        System.out.println("поиск по id ");
-        System.out.println(taskMeneger.findTaskId(-1608546673));
-        System.out.println(taskMeneger.findTaskId(1608546673));
-        System.out.println("__________________");
-
-        System.out.println("поиск по name ");
-        System.out.println(taskMeneger.findTaskName("таск2"));
-        System.out.println(taskMeneger.findTaskName(""));
-        System.out.println("__________________");
-
-        taskMeneger.removeAllTasks();
-        System.out.println("полная очистка");
-        System.out.println(taskMeneger.getTaskStatus());
-        System.out.println(taskMeneger.getTaskList());
+        System.out.println("Поехали!");
 
 
+        Task task = new Task("Задача 1", "Описание задачи 1", StatusList.IN_PROGRESS, 1);
+        taskMeneger.addTask(task);
+
+        task = new Task("Задача 2", "Описание задачи 2", StatusList.IN_PROGRESS, 2);
+        taskMeneger.addTask(task);
+
+        Task epic = new Epic("Эпик 1", "Описание эпик задачи 1", StatusList.NEW, 3);
+        taskMeneger.addTask(epic);
+
+        epic = new Epic("Эпик 2", "Описание эпик задачи 2", StatusList.IN_PROGRESS, 4);
+        taskMeneger.addTask(epic);
+
+        Task subtask = new Subtask("Подзадача 1 для Эпик 1", "Описание подзадачи 1",
+                StatusList.IN_PROGRESS,5, "Эпик 1");
+        taskMeneger.addTask(subtask);
+
+        subtask = new Subtask("Подзадача 2 для Эпик 1", "Описание подзадачи 2",
+                StatusList.DONE,6, "Эпик 1");
+        taskMeneger.addTask(subtask);
+
+        subtask = new Subtask("Подзадача 3 для Эпик 2", "Описание подзадачи 3",
+                StatusList.DONE,7, "Эпик 2");
+        taskMeneger.addTask(subtask);
+
+        System.out.println("-----------------------");
+        System.out.println("Список всех задач");
+        taskMeneger.printAll();
+
+        System.out.println("-----------------------");
+        System.out.println("Текущая `Задача 1`");
+        taskMeneger.printById(1);
+        System.out.println("Обновление `Задача 1` в `Задача 4`");
+        task = new Task("Задача 4", "Бывшая задача 1", StatusList.DONE, 8);
+        taskMeneger.updateTask(1, task);
+        taskMeneger.printById(8);
+
+        System.out.println("-----------------------");
+        System.out.println("Текущая `Эпик 1`");
+        taskMeneger.printById(3);
+        System.out.println("Обновление `Эпик 1` в `Эпик 4`");
+        epic = new Task("Эпик 4", "Бывшая эпик 1", StatusList.DONE, 9);
+        taskMeneger.updateTask(3, epic);
+        taskMeneger.printById(9);
+
+          System.out.println("-----------------------");
+//        System.out.println("Удаление `Задача 4`");
+//        taskMeneger.removeById(1673999774);
+          taskMeneger.printAll();
+
+//        System.out.println("-----------------------");
+//        System.out.println("Удаление `Подзадача 1 для Эпик 1`");
+//        taskMeneger.removeById(1932409137);
+//        taskMeneger.printAll();
+//
+//        System.out.println("-----------------------");
+//        System.out.println("Удаление `Эпик 1`");
+//        taskMeneger.removeById(362184061);
+//        taskMeneger.printAll();
+//
+//        System.out.println("-----------------------");
+//        System.out.println("Очистить список задач");
+//        taskMeneger.removeAll();
+//        taskMeneger.printAll();
+//
+//        System.out.println("-----------------------");
+//        System.out.println("Выход");
     }
 }
