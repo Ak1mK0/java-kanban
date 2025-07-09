@@ -4,8 +4,8 @@ import java.util.Objects;
 public class Epic extends Task {
     private ArrayList<Task> subtasks = new ArrayList<>();
 
-    public Epic(String name, String description, StatusList status, int id) {
-        super(name, description, status, id);
+    public Epic(String name, String description, StatusList status) {
+        super(name, description, status);
         updateStatus();
     }
 
@@ -19,7 +19,6 @@ public class Epic extends Task {
         setName(task.getName());
         setDescription(task.getDescription());
         setStatus(task.getStatus());
-        setId(task.getId());
 
         if (!subtasks.isEmpty()) {
             for (Task subtasks : subtasks) {
@@ -27,6 +26,13 @@ public class Epic extends Task {
                 tempTask.setTaskFor(getName());
             }
         }
+
+        updateStatus();
+    }
+
+    public void removeSubtask(Task task) {
+        subtasks.remove(task);
+        updateStatus();
     }
 
     public void updateStatus() {
@@ -55,6 +61,15 @@ public class Epic extends Task {
                 case StatusList.IN_PROGRESS:
                     setStatus(StatusList.IN_PROGRESS);
                     break;
+            }
+        }
+    }
+
+    public void printSubtasks() {
+        if (!subtasks.isEmpty()) {
+            System.out.println("Список подзадач для задачи: " + getName());
+            for (Task subtask : subtasks) {
+                System.out.println(subtask);
             }
         }
     }

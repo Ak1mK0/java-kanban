@@ -4,12 +4,14 @@ import java.util.*;
 public class TaskManager {
 
     private HashMap<Integer, Task> taskList = new HashMap<>();
+    private int id;
 
-    public void addTask(Task task) {
+    public void addTask(Task task, int id) {
+
         if (task.getClass() != Subtask.class) {
-            taskList.put((task.getId()), task);
+            taskList.put((id), task);
         } else {
-            taskList.put((task.getId()), task);
+            taskList.put((id), task);
 
             Subtask tempSubTask = (Subtask) task;
             String taskFor = tempSubTask.getTaskFor();
@@ -19,8 +21,20 @@ public class TaskManager {
         }
     }
 
-    public void updateTask(int id, Task task) {
-        taskList.get(id).updateTask(task);
+    public void updateTask(Task task, int id) {
+        if (task.getClass() != Subtask.class) {
+            taskList.get(id).updateTask(task);
+        } else {
+            Subtask tempSubtask = (Subtask) taskList.get(id);
+            if (!tempSubtask.getTaskFor().equals(((Subtask) task).getTaskFor())) {
+                Epic tempEpic = (Epic) findTaskByName(tempSubtask.getTaskFor());
+                tempEpic.removeSubtask(tempSubtask);
+
+                tempEpic = (Epic) findTaskByName(((Subtask) task).getTaskFor());
+                tempEpic.addSubtask(task);
+            }
+            taskList.get(id).updateTask(task);
+        }
     }
 
     public Task findTaskByName(String name) {
@@ -33,12 +47,7 @@ public class TaskManager {
     }
 
     public Task findTaskById(int id) {
-        for (Task task : taskList.values()) {
-            if (id == task.getId()) {
-                return task;
-            }
-        }
-        return null;
+        return taskList.get(id);
     }
 
     public void printAll() {
@@ -48,7 +57,10 @@ public class TaskManager {
     }
 
     public void printById(int id) {
-            System.out.println(findTaskById(id));
+            System.out.println(taskList.get(id));
+            if (findTaskById(id).getClass() == Epic.class) {
+                ((Epic) taskList.get(id)).printSubtasks();
+            }
     }
 
     public void removeAll() {
@@ -57,13 +69,23 @@ public class TaskManager {
 
     public void removeById(int id) {
         Task task = findTaskById(id);
-        if (task.getClass() != Epic.class) {
+        if (task.getClass() == Task.class) {
             taskList.remove(id);
-        } else {
-            for (Task tempTask : ((Epic) task).getSubtasks()) {
-                taskList.remove(tempTask.getId());
+        } else if (task.getClass() == Epic.class) {
+            for(Task subtask : ((Epic) task).getSubtasks()) {
+                String Name = subtask.getName();
+                for (int tempId : taskList.keySet()) {
+                    if (taskList.get(tempId).getName().equals(Name))
+                        taskList.remove(tempId);
+                }
             }
             taskList.remove(id);
+        } else {
+            Epic tempEpic = (Epic) findTaskByName(((Subtask) task).getTaskFor());
+            tempEpic.removeSubtask(task);
+
+            taskList.remove(id);
         }
+
     }
 }
