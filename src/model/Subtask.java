@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -7,14 +9,6 @@ public class Subtask extends Task {
     public Subtask(String name, String description, StatusList status, String taskFor) {
         super(name, description, status);
         this.taskFor = taskFor;
-    }
-
-    public void updateTask(Task task) {
-        Subtask tempTask = (Subtask) task;
-        setName(tempTask.getName());
-        setDescription(tempTask.getDescription());
-        setStatus(tempTask.getStatus());
-        setTaskFor(tempTask.getTaskFor());
     }
 
     @Override
@@ -32,11 +26,13 @@ public class Subtask extends Task {
 
     public String toString() {
         return  String.format("Задача: %s." +
-                        " Описание задачи: %s." +
-                        " Статус задачи: %s.",
+                        " ID: %d." +
+                        " Статус задачи: %s." +
+                        " Подзадача для: %s.",
                 getName(),
-                getDescription(),
-                getStatus());
+                getId(),
+                getStatus(),
+                getTaskFor());
     }
 
     public String getTaskFor() {

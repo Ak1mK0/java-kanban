@@ -1,21 +1,18 @@
+package model;
+
 import java.util.Objects;
 
 public class Task {
     private String name;
     private String description;
     private StatusList status;
+    private int id;
 
 
     public Task(String name, String description, StatusList status) {
         this.name = name;
         this.description = description;
         this.status = status;
-    }
-
-    public void updateTask(Task task) {
-        setName(task.getName());
-        setDescription(task.getDescription());
-        setStatus(task.getStatus());
     }
 
     @Override
@@ -33,10 +30,10 @@ public class Task {
     @Override
     public String toString() {
         return  String.format("Задача: %s. " +
-                "Описание задачи: %s." +
+                "ID: %d." +
                 " Статус задачи: %s",
                 getName(),
-                getDescription(),
+                getId(),
                 getStatus());
     }
 
@@ -52,6 +49,10 @@ public class Task {
         return status;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -64,4 +65,7 @@ public class Task {
         this.status = status;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 }

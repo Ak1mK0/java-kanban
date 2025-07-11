@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -14,8 +16,7 @@ public class Epic extends Task {
         updateStatus();
     }
 
-    @Override
-    public void updateTask(Task task) {
+    public void updateEpic(Task task) {
         setName(task.getName());
         setDescription(task.getDescription());
         setStatus(task.getStatus());
@@ -35,6 +36,11 @@ public class Epic extends Task {
         updateStatus();
     }
 
+    public void removeAllSubtask() {
+        subtasks.clear();
+        updateStatus();
+    }
+
     public void updateStatus() {
         if (subtasks.isEmpty()) {
             setStatus(StatusList.NEW);
@@ -49,29 +55,49 @@ public class Epic extends Task {
                     if (newCount == subtasks.size()) {
                         setStatus(StatusList.NEW);
                         return;
+                    } else {
+                        setStatus(StatusList.IN_PROGRESS);
+                        return;
                     }
-                    break;
                 case StatusList.DONE:
                     doneCount++;
                     if (doneCount == subtasks.size()) {
                         setStatus(StatusList.DONE);
                         return;
                     }
-                    break;
-                case StatusList.IN_PROGRESS:
+                    else {
+                        setStatus(StatusList.IN_PROGRESS);
+                        return;
+                    }
+                default:
                     setStatus(StatusList.IN_PROGRESS);
                     break;
             }
         }
     }
 
-    public void printSubtasks() {
+    @Override
+    public String toString() {
+        String text = String.format("Задача: %s. " +
+                        "ID: %d." +
+                        " Статус задачи: %s",
+                getName(),
+                getId(),
+                getStatus());
         if (!subtasks.isEmpty()) {
-            System.out.println("Список подзадач для задачи: " + getName());
+            text = text + System.lineSeparator() + "Текущие подзадачи:";
             for (Task subtask : subtasks) {
-                System.out.println(subtask);
+                text = text + String.format("%nЗадача: %s. " +
+                                "ID: %d." +
+                                " Статус задачи: %s",
+                        subtask.getName(),
+                        subtask.getId(),
+                        subtask.getStatus());
             }
+        } else {
+            text = text + System.lineSeparator() + "Подзадач нет.";
         }
+        return  text;
     }
 
     public ArrayList<Task> getSubtasks() {
