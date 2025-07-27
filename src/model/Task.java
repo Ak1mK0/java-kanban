@@ -15,11 +15,25 @@ public class Task {
         this.status = status;
     }
 
+    protected Task(Task copy) {
+        this.name = copy.name;
+        this.description = copy.description;
+        this.status = copy.status;
+        setId(copy.getId());
+    }
+
+    public Task copy() {
+        return new Task(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return Objects.equals(name, task.name)
+                && Objects.equals(description, task.description)
+                && status == task.status
+                && id == task.id;
     }
 
     @Override

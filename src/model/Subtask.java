@@ -4,11 +4,22 @@ import java.util.Objects;
 
 public class Subtask extends Task {
 
-    private String taskFor;
+    private int taskFor;
 
-    public Subtask(String name, String description, StatusList status, String taskFor) {
+    public Subtask(String name, String description, StatusList status, int taskFor) {
         super(name, description, status);
         this.taskFor = taskFor;
+    }
+
+    protected Subtask(Subtask copy) {
+        super(copy);
+        setId(copy.getId());
+        this.taskFor = copy.taskFor;
+    }
+
+    @Override
+    public Subtask copy() {
+        return new Subtask(this);
     }
 
     @Override
@@ -16,7 +27,7 @@ public class Subtask extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return Objects.equals(taskFor, subtask.taskFor);
+        return taskFor == subtask.taskFor;
     }
 
     @Override
@@ -35,11 +46,13 @@ public class Subtask extends Task {
                 getTaskFor());
     }
 
-    public String getTaskFor() {
+
+
+    public int getTaskFor() {
         return taskFor;
     }
 
-    public void setTaskFor(String taskFor) {
+    public void setTaskFor(int taskFor) {
         this.taskFor = taskFor;
     }
 }

@@ -12,8 +12,10 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Task task) {
-        subtasks.add(task);
-        updateStatus();
+        if (task.getClass() == Subtask.class) {
+            subtasks.add(task);
+            updateStatus();
+        }
     }
 
     public void updateEpic(Task task) {
@@ -24,7 +26,7 @@ public class Epic extends Task {
         if (!subtasks.isEmpty()) {
             for (Task subtasks : subtasks) {
                 Subtask tempTask = (Subtask) subtasks;
-                tempTask.setTaskFor(getName());
+                tempTask.setTaskFor(getId());
             }
         }
 
@@ -121,4 +123,5 @@ public class Epic extends Task {
     public void setStatus(StatusList status) {
         super.setStatus(status);
     }
+
 }
