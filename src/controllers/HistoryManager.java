@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public interface HistoryManager {
 
-    <T extends Task> void addHistory(T task);
+    void addHistory(Task task);
 
     LinkedList<? extends Task> getHistory();
 }

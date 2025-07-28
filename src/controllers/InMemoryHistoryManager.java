@@ -9,7 +9,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final LinkedList<Task> history = new LinkedList<>();
 
     @Override
-    public <T extends Task> void addHistory(T task) {
+    public void addHistory(Task task) {
         history.add(task.copy());
         if (history.size() > MAX_SIZE) {
             history.removeFirst();
