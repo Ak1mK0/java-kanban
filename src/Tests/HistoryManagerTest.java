@@ -82,4 +82,11 @@ class HistoryManagerTest {
 
         Assertions.assertEquals(4, historyManager.getHistory().size());
     }
+
+    @Test
+    void nullGetHistoryCheck() {
+        HistoryManager historyManager = Managers.getDefaultHistory();
+        System.out.println(historyManager.getHistory());
+        Assertions.assertEquals(0, historyManager.getHistory().size());
+    }
 }
