@@ -1,4 +1,4 @@
-package tests;
+package test;
 
 import controllers.Managers;
 import controllers.TaskManager;

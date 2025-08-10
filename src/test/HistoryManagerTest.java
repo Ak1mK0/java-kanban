@@ -1,4 +1,4 @@
-package tests;
+package test;
 
 import controllers.HistoryManager;
 import controllers.Managers;
