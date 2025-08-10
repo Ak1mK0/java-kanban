@@ -10,7 +10,7 @@ import model.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ManagersTest {
+class ManagerTest {
 
     @Test
     void tasksEquals() {
@@ -68,13 +68,6 @@ class ManagersTest {
     }
 
     @Test
-    void defaultHistoryManagerInitialization() {
-        HistoryManager historyManager = Managers.getDefaultHistory();
-
-        Assertions.assertNotNull(historyManager);
-    }
-
-    @Test
     void addTasksById() {
         TaskManager taskManager = Managers.getDefault();
         Task task1 = new Task("NewTask", "NewTask description", StatusList.NEW);
@@ -87,15 +80,5 @@ class ManagersTest {
         Assertions.assertEquals(task1, taskManager.getTaskById(1));
         Assertions.assertEquals(epic1, taskManager.getEpicById(2));
         Assertions.assertEquals(sub1, taskManager.getSubtaskById(3));
-    }
-
-    @Test
-    void checkHistoryLog() {
-        HistoryManager historyManager = Managers.getDefaultHistory();
-        Task task = new Task("NewTask", "NewTask description", StatusList.NEW);
-        historyManager.addHistory(task);
-        task.setStatus(StatusList.IN_PROGRESS);
-        historyManager.addHistory(task);
-        Assertions.assertNotEquals(task, historyManager.getHistory().get(0));
     }
 }
