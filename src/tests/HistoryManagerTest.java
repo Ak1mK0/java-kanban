@@ -1,11 +1,8 @@
-package Tests;
+package tests;
 
 import controllers.HistoryManager;
 import controllers.Managers;
-import controllers.TaskManager;
-import model.Epic;
 import model.StatusList;
-import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

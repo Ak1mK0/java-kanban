@@ -1,6 +1,5 @@
-package Tests;
+package tests;
 
-import controllers.HistoryManager;
 import controllers.Managers;
 import controllers.TaskManager;
 import model.Epic;
