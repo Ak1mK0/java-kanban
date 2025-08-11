@@ -66,8 +66,7 @@ public class Epic extends Task {
                     if (doneCount == subtasks.size()) {
                         setStatus(StatusList.DONE);
                         return;
-                    }
-                    else {
+                    } else {
                         setStatus(StatusList.IN_PROGRESS);
                         return;
                     }
@@ -99,7 +98,7 @@ public class Epic extends Task {
         } else {
             text = text + System.lineSeparator() + "Подзадач нет.";
         }
-        return  text;
+        return text;
     }
 
     public ArrayList<Task> getSubtasks() {
