@@ -48,4 +48,6 @@ public interface TaskManager {
     void removeEpicById(int id);
 
     void removeSubtaskById(int id);
+
+    int getHistorySize();
 }

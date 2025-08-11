@@ -7,9 +7,10 @@ public interface HistoryManager {
 
     void add(Task task);
 
-    void remove(Node node);
+    void removeById(int id);
 
     ArrayList<Task> getHistory();
 
     int getSize();
+
 }
