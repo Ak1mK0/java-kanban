@@ -45,7 +45,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasksHistory;
     }
 
-    public void linkedLast(Task task) {
+    private void linkedLast(Task task) {
         final Node newNode;
         if (taskMap.isEmpty()) {
             newNode = new Node(null, task, null);
