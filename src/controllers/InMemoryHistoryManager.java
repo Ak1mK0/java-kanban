@@ -8,9 +8,9 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final Map<Integer, Node> taskMap = new HashMap<>();
-    private int lastId = -1;
-    private int penultimateId = -1;
-    private int firstId = -1;
+    private Node last = null;
+    private Node penultimate = null;
+    private Node first = null;
 
     @Override
     public void add(Task task) {
@@ -38,7 +38,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public ArrayList<Task> getHistory() {
         ArrayList<Task> tasksHistory = new ArrayList<>(taskMap.size());
         if (!taskMap.isEmpty()) {
-            Node tmp = taskMap.get(lastId);
+            Node tmp = taskMap.get(last);
             while (tmp.getPrev() != null) {
                 tasksHistory.add(tmp.getTask());
                 tmp = tmp.getPrev();
@@ -52,17 +52,17 @@ public class InMemoryHistoryManager implements HistoryManager {
         final Node newNode;
         if (taskMap.isEmpty()) {
             newNode = new Node(null, task, null);
-            lastId = task.getId();
-            firstId = lastId;
+            last = newNode;
+            first = last;
         } else {
-            if (lastId == task.getId()) {
-                lastId = penultimateId;
+            if (last.getTask().equals(task)) {
+                last = penultimate;
             } else {
-                penultimateId = lastId;
+                penultimate = last;
             }
-            newNode = new Node(taskMap.get(lastId), task, null);
-            taskMap.get(lastId).setNext(newNode);
-            lastId = task.getId();
+            newNode = new Node(last, task, null);
+            last.setNext(newNode);
+            last = newNode;
         }
         taskMap.put(newNode.getTaskId(), newNode);
     }
