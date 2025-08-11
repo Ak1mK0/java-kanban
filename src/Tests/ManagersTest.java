@@ -1,3 +1,6 @@
+package Tests;
+
+import controllers.HistoryManager;
 import controllers.Managers;
 import controllers.TaskManager;
 import model.Epic;
@@ -7,9 +10,7 @@ import model.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-class ManagerTest {
+class ManagersTest {
 
     @Test
     void tasksEquals() {
@@ -67,6 +68,13 @@ class ManagerTest {
     }
 
     @Test
+    void defaultHistoryManagerInitialization() {
+        HistoryManager historyManager = Managers.getDefaultHistory();
+
+        Assertions.assertNotNull(historyManager);
+    }
+
+    @Test
     void addTasksById() {
         TaskManager taskManager = Managers.getDefault();
         Task task1 = new Task("NewTask", "NewTask description", StatusList.NEW);
@@ -82,32 +90,12 @@ class ManagerTest {
     }
 
     @Test
-    void deleteEpicAndSubtaskFromHistoryManager() {
-        TaskManager taskManager = Managers.getDefault();
-        Epic epic1 = new Epic("NewEpic1", "NewEpic description", StatusList.IN_PROGRESS);
-        Subtask sub1 = new Subtask("NewSub1", "NewSub1 description", StatusList.DONE, 1);
-        Subtask sub2 = new Subtask("NewSub2", "NewSub2 description", StatusList.DONE, 1);
-        Epic epic2 = new Epic("NewEpic2", "NewEpic description", StatusList.IN_PROGRESS);
-        Subtask sub3 = new Subtask("NewSub3", "NewSub description", StatusList.DONE, 4);
-
-        taskManager.addEpic(epic1);
-        taskManager.addSubtask(sub1);
-        taskManager.addSubtask(sub2);
-        taskManager.addEpic(epic2);
-        taskManager.addSubtask(sub3);
-
-        taskManager.getEpicById(1);
-        taskManager.getSubtaskById(3);
-        taskManager.getSubtaskById(5);
-        taskManager.getEpicById(4);
-        taskManager.getSubtaskById(2);
-
-        Assertions.assertEquals(5, taskManager.getHistorySize());
-
-        taskManager.removeSubtaskById(3);
-        Assertions.assertEquals(4, taskManager.getHistorySize());
-
-        taskManager.removeEpicById(1);
-        Assertions.assertEquals(2, taskManager.getHistorySize());
+    void checkHistoryLog() {
+        HistoryManager historyManager = Managers.getDefaultHistory();
+        Task task = new Task("NewTask", "NewTask description", StatusList.NEW);
+        historyManager.addHistory(task);
+        task.setStatus(StatusList.IN_PROGRESS);
+        historyManager.addHistory(task);
+        Assertions.assertNotEquals(task, historyManager.getHistory().get(0));
     }
 }

@@ -1,5 +1,5 @@
-public class Main {
-    public static void main(String[] args) {
+import controllers.*;
 
-    }
+public static void main(String[] args) {
+
 }

@@ -1,17 +1,10 @@
 package controllers;
-
 import model.Task;
-
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public interface HistoryManager {
 
-    void add(Task task);
+    void addHistory(Task task);
 
-    void removeById(int id);
-
-    ArrayList<Task> getHistory();
-
-    int getSize();
-
+    LinkedList<? extends Task> getHistory();
 }
