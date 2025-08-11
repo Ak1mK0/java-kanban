@@ -1,9 +1,11 @@
 package controllers;
 
-import model.Node;
 import model.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -11,6 +13,44 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node last = null;
     private Node penultimate = null;
     private Node first = null;
+
+    private class Node {
+
+        private Node prev;
+        private Node next;
+        private final Task task;
+
+
+        public Node(Node head, Task task, Node tail) {
+            this.prev = head;
+            this.task = task;
+            this.next = tail;
+        }
+
+        public int getTaskId() {
+            return task.getId();
+        }
+
+        public Task getTask() {
+            return task;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+        public Node getPrev() {
+            return prev;
+        }
+
+        public void setNext(Node node) {
+            next = node;
+        }
+
+        public void setPrev(Node node) {
+            prev = node;
+        }
+    }
 
     @Override
     public void add(Task task) {

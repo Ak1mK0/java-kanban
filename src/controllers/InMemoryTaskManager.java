@@ -1,8 +1,12 @@
 package controllers;
 
-import model.*;
+import model.Epic;
+import model.Subtask;
+import model.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -110,7 +114,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask findSubtaskById(int id) {
-            return subtasks.get(id);
+        return subtasks.get(id);
     }
 
     @Override
