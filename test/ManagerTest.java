@@ -110,4 +110,48 @@ class ManagerTest {
         taskManager.removeEpicById(1);
         Assertions.assertEquals(2, taskManager.getHistorySize());
     }
+
+    @Test
+    void checkStatusChengeInEpic() {
+        TaskManager taskManager = Managers.getDefault();
+        Epic epic1 = new Epic("NewEpic1", "NewEpic description", StatusList.IN_PROGRESS);
+        Subtask sub1 = new Subtask("NewSub1", "NewSub1 description", StatusList.DONE, 1);
+        Subtask sub2 = new Subtask("NewSub2", "NewSub2 description", StatusList.DONE, 1);
+        taskManager.addEpic(epic1);
+        taskManager.addSubtask(sub1);
+        taskManager.addSubtask(sub2);
+        Assertions.assertEquals(StatusList.DONE, epic1.getStatus());
+
+        epic1 = new Epic("NewEpic1", "NewEpic description", StatusList.IN_PROGRESS);
+        sub1 = new Subtask("NewSub1", "NewSub1 description", StatusList.NEW, 4);
+        sub2 = new Subtask("NewSub2", "NewSub2 description", StatusList.NEW, 4);
+        taskManager.addEpic(epic1);
+        taskManager.addSubtask(sub1);
+        taskManager.addSubtask(sub2);
+        Assertions.assertEquals(StatusList.NEW, epic1.getStatus());
+
+        epic1 = new Epic("NewEpic1", "NewEpic description", StatusList.IN_PROGRESS);
+        sub1 = new Subtask("NewSub1", "NewSub1 description", StatusList.NEW, 7);
+        sub2 = new Subtask("NewSub2", "NewSub2 description", StatusList.DONE, 7);
+        taskManager.addEpic(epic1);
+        taskManager.addSubtask(sub1);
+        taskManager.addSubtask(sub2);
+        Assertions.assertEquals(StatusList.IN_PROGRESS, epic1.getStatus());
+
+        epic1 = new Epic("NewEpic1", "NewEpic description", StatusList.IN_PROGRESS);
+        sub1 = new Subtask("NewSub1", "NewSub1 description", StatusList.IN_PROGRESS, 10);
+        sub2 = new Subtask("NewSub2", "NewSub2 description", StatusList.DONE, 10);
+        taskManager.addEpic(epic1);
+        taskManager.addSubtask(sub1);
+        taskManager.addSubtask(sub2);
+        Assertions.assertEquals(StatusList.IN_PROGRESS, epic1.getStatus());
+
+        epic1 = new Epic("NewEpic1", "NewEpic description", StatusList.IN_PROGRESS);
+        sub1 = new Subtask("NewSub1", "NewSub1 description", StatusList.NEW, 13);
+        sub2 = new Subtask("NewSub2", "NewSub2 description", StatusList.IN_PROGRESS, 13);
+        taskManager.addEpic(epic1);
+        taskManager.addSubtask(sub1);
+        taskManager.addSubtask(sub2);
+        Assertions.assertEquals(StatusList.IN_PROGRESS, epic1.getStatus());
+    }
 }
