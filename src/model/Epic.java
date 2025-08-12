@@ -44,36 +44,28 @@ public class Epic extends Task {
     }
 
     public void updateStatus() {
+        boolean isProgress = false;
+        boolean isNew = false;
+        boolean isDone = false;
         if (subtasks.isEmpty()) {
             setStatus(StatusList.NEW);
             return;
         }
-        int doneCount = 0;
-        int newCount = 0;
-        for (Task task : subtasks) {
-            switch (task.getStatus()) {
-                case StatusList.NEW:
-                    newCount++;
-                    if (newCount == subtasks.size()) {
-                        setStatus(StatusList.NEW);
-                        return;
-                    } else {
-                        setStatus(StatusList.IN_PROGRESS);
-                        return;
-                    }
-                case StatusList.DONE:
-                    doneCount++;
-                    if (doneCount == subtasks.size()) {
-                        setStatus(StatusList.DONE);
-                        return;
-                    } else {
-                        setStatus(StatusList.IN_PROGRESS);
-                        return;
-                    }
-                default:
-                    setStatus(StatusList.IN_PROGRESS);
-                    break;
+        for (Task subtask : subtasks) {
+            if (subtask.getStatus().equals(StatusList.NEW)) {
+                isNew = true;
+            } else if (subtask.getStatus().equals(StatusList.DONE)) {
+                isDone = true;
+            } else {
+                isProgress = true;
             }
+        }
+        if ((isNew && isDone) || isProgress) {
+            setStatus(StatusList.IN_PROGRESS);
+        } else if (isNew) {
+            setStatus(StatusList.NEW);
+        } else {
+            setStatus(StatusList.DONE);
         }
     }
 
