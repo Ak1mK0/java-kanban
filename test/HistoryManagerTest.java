@@ -10,7 +10,6 @@ class HistoryManagerTest {
     @Test
     void defaultHistoryManagerInitialization() {
         HistoryManager historyManager = Managers.getDefaultHistory();
-
         Assertions.assertNotNull(historyManager);
     }
 
