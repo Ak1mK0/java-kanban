@@ -180,4 +180,12 @@ public class InMemoryTaskManager implements TaskManager {
     public int getHistorySize() {
         return historyManager.getSize();
     }
+
+    public void setGenId(int id) {
+        genId = id;
+    }
+
+    public int getGenId() {
+        return genId;
+    }
 }
