@@ -65,6 +65,10 @@ public class BackedTaskTest {
             fr.write(System.lineSeparator());
             fr.write("3,class model.Subtask,NewSubtask1,NEW,NewSubtask1 description,2");
             fr.write(System.lineSeparator());
+            fr.write("6,class model.Task,NewTask6,NEW,NewTask6 description");
+            fr.write(System.lineSeparator());
+            fr.write("4,class model.Subtask,NewSubtask4,NEW,NewSubtask1 description,2");
+            fr.write(System.lineSeparator());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -75,9 +79,9 @@ public class BackedTaskTest {
 
         fb.loadFromBacked(backed.toFile());
 
-        Assertions.assertEquals(1, fb.getTasks().size());
+        Assertions.assertEquals(2, fb.getTasks().size());
         Assertions.assertEquals(1, fb.getEpics().size());
-        Assertions.assertEquals(1, fb.getSubtasks().size());
+        Assertions.assertEquals(2, fb.getSubtasks().size());
     }
 
 }

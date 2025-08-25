@@ -1,12 +1,15 @@
 package controllers;
 
+import exception.ManagerSaveException;
 import model.Epic;
 import model.StatusList;
 import model.Subtask;
 import model.Task;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -18,95 +21,95 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager() {
         if (!Files.exists(backed)) {
+            createDirToFile();
             createCSVFile();
+        }
+    }
+
+    private void createDirToFile() {
+        if (Files.notExists(backedDir)) {
+            try {
+                Files.createDirectory(backedDir);
+            } catch (IOException e) {
+                throw new ManagerSaveException("Ошибка при создании директории: ", e);
+            }
         }
     }
 
     private void createCSVFile() {
         try {
-            Files.createDirectory(backedDir);
-        } catch (FileAlreadyExistsException e) {
-            System.out.println("Путь уже существует");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
             Files.createFile(backed);
-        } catch (FileAlreadyExistsException e) {
-            System.out.println("Файл уже существует");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("Ошибка при создании файла: ", e);
         }
-
         try (FileWriter fr = new FileWriter(backed.toFile())) {
             fr.write(headText);
             fr.write(System.lineSeparator());
         } catch (IOException e) {
-            System.out.println("Ошибка записи");
+            throw new ManagerSaveException("Ошибка при записи в файл: ", e);
         }
     }
 
-    @Override
-    public void addTask(Task task) {
-        super.addTask(task);
+    private void deleteCSVFile() {
+        if (Files.exists(backed)) {
+            try {
+                Files.delete(backed);
+            } catch (IOException e) {
+                throw new ManagerSaveException("Ошибка при удалении файла: ", e);
+            }
+        }
+    }
+
+    private void saveInBacked() {
         if (load) {
-            saveInBacked(task);
-            load = true;
+            deleteCSVFile();
+            createCSVFile();
+            try (FileWriter fr = new FileWriter(backed.toFile(), true)) {
+                if (!getTasks().isEmpty()) {
+                    for (Task task : getTasks()) {
+                        fr.write(taskToString(task));
+                        fr.write(System.lineSeparator());
+                    }
+                }
+                if (!getEpics().isEmpty()) {
+                    for (Epic epic : getEpics()) {
+                        fr.write(taskToString(epic));
+                        fr.write(System.lineSeparator());
+                    }
+                }
+                if (!getSubtasks().isEmpty()) {
+                    for (Subtask subtask : getSubtasks()) {
+                        fr.write(taskToString(subtask));
+                        fr.write(System.lineSeparator());
+                    }
+                }
+            } catch (IOException e) {
+                throw new ManagerSaveException("Ошибка при записи в файл: ", e);
+            }
         }
-    }
-
-    @Override
-    public void addEpic(Epic epic) {
-        super.addEpic(epic);
-        if (load) {
-            saveInBacked(epic);
-            load = true;
-        }
-    }
-
-    @Override
-    public void addSubtask(Subtask subtask) {
-        super.addSubtask(subtask);
-        if (load) {
-            saveInBacked(subtask);
-            load = true;
-        }
-    }
-
-    private void saveInBacked(Task task) {
-        try (FileWriter fr = new FileWriter(backed.toFile(), true)) {
-            fr.write(taskToString(task));
-            fr.write(System.lineSeparator());
-        } catch (IOException e) {
-            System.out.println("Ошибка записи");
-        }
-    }
-
-    private String taskToString(Task task) {
-        String taskText = String.format("%d,%s,%s,%s,%s",
-                task.getId(),
-                task.getClass(),
-                task.getName(),
-                task.getStatus(),
-                task.getDescription());
-        if (task.getClass() == Subtask.class) {
-            taskText = taskText + "," + ((Subtask) task).getTaskFor();
-        }
-        return taskText;
     }
 
     public void loadFromBacked(File file) {
+        load = false;
+        int maxId = 0;
+
         if (!file.exists()) {
             System.out.println("Файл не существует: " + file);
             return;
         }
-        load = false;
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String text = br.readLine();
             while (br.ready()) {
-                String text = br.readLine();
+                text = br.readLine();
                 String[] str = text.split(",");
+
+                if (getGenId() != Integer.parseInt(str[0])) {
+                    setGenId(Integer.parseInt(str[0]) - 1);
+                    if (maxId < Integer.parseInt(str[0])) {
+                        maxId = Integer.parseInt(str[0]);
+                    }
+                }
 
                 if (str[1].equals("class model.Task")) {
                     Task task = stringToTask(str);
@@ -121,10 +124,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("Ошибка загрузке из файла: ", e);
         }
+        setGenId(maxId);
+        load = true;
     }
 
+    private String taskToString(Task task) {
+        String taskText = String.format("%d,%s,%s,%s,%s",
+                task.getId(),
+                task.getClass(),
+                task.getName(),
+                task.getStatus(),
+                task.getDescription());
+        if (task.getClass() == Subtask.class) {
+            taskText = taskText + "," + ((Subtask) task).getTaskFor();
+        }
+        return taskText;
+    }
 
     private Task stringToTask(String[] str) {
         int id = Integer.parseInt(str[0]);
@@ -164,4 +181,77 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         return subtask;
     }
+
+    @Override
+    public void addTask(Task task) {
+        super.addTask(task);
+        saveInBacked();
+    }
+
+    @Override
+    public void addEpic(Epic epic) {
+        super.addEpic(epic);
+        saveInBacked();
+    }
+
+    @Override
+    public void addSubtask(Subtask subtask) {
+        super.addSubtask(subtask);
+        saveInBacked();
+    }
+
+    @Override
+    public void updateTask(Task task, int id) {
+        super.updateTask(task, id);
+        saveInBacked();
+    }
+
+    @Override
+    public void updateEpic(Epic epic, int id) {
+        super.updateEpic(epic, id);
+        saveInBacked();
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask, int id) {
+        super.updateSubtask(subtask, id);
+        saveInBacked();
+    }
+
+    @Override
+    public void removeAllTasks() {
+        super.removeAllTasks();
+        saveInBacked();
+    }
+
+    @Override
+    public void removeAllEpics() {
+        super.removeAllEpics();
+        saveInBacked();
+    }
+
+    @Override
+    public void removeAllSubtasks() {
+        super.removeAllSubtasks();
+        saveInBacked();
+    }
+
+    @Override
+    public void removeTaskById(int id) {
+        super.removeTaskById(id);
+        saveInBacked();
+    }
+
+    @Override
+    public void removeEpicById(int id) {
+        super.removeEpicById(id);
+        saveInBacked();
+    }
+
+    @Override
+    public void removeSubtaskById(int id) {
+        super.removeSubtaskById(id);
+        saveInBacked();
+    }
 }
+
